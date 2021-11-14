@@ -6,6 +6,8 @@
 
 <script>
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+const glbFile = 'https://danielpatrickkoenig.github.io/three-game-exparament/public/pencil/source/pencil.glb';
 export default {
     data () {
         return {
@@ -26,12 +28,24 @@ export default {
         this.renderer.setSize( width, width );
         this.$refs.stage.appendChild( this.renderer.domElement );
 
-        const geometry = new THREE.BoxGeometry();
-        const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-        const cube = new THREE.Mesh( geometry, material );
-        this.scene.add( cube );
+        // const geometry = new THREE.BoxGeometry();
+        // const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+        // const cube = new THREE.Mesh( geometry, material );
+        // this.scene.add( cube );
 
         this.camera.position.z = 5;
+
+        const loader = new GLTFLoader();
+
+        loader.load( glbFile, function ( gltf ) {
+            console.log(gltf);
+            this.scene.add( gltf.scene );
+
+        }, undefined, function ( error ) {
+
+            console.error( error );
+
+        } );
 
         console.log(this.renderer);
 
