@@ -6,15 +6,18 @@
 
 <script>
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-const glbFile = 'https://danielpatrickkoenig.github.io/three-game-exparament/public/Xbot.glb';
+// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import Environment3d from '../classes/Environment3d.js';
+import ModelLoader from '../classes/ModelLoader.js';
+// const glbFile = 'https://danielpatrickkoenig.github.io/three-game-exparament/public/Xbot.glb';
+const glbFile = 'https://danielpatrickkoenig.github.io/three-game-exparament/public/testThing.glb';
+// const glbFile = '../assets/testThing.txt';
+
 // const glbFile = 'https://danielpatrickkoenig.github.io/three-game-exparament/public/pencil/source/pencil.glb';
 export default {
     data () {
         return {
-            camera: null,
-            scene: null,
-            renderer: null
+            env: null
 
         }
     },
@@ -32,52 +35,16 @@ export default {
             });
         }
     },
-    mounted () {
-        const width = 1000;
-        const height = 700;
-        console.log(this.$refs.stage);
-        this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color( 0xEEEEEE );
-        this.camera = new THREE.PerspectiveCamera( 75, width / height, 0.1, 1000 );
+    async mounted () {
+        this.env = new Environment3d(this.$refs.stage, {width: 1000, height: 700})
+        
+        const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 ); 
+        this.env.scene.add( directionalLight );
+        this.env.camera.position.z = 4;
 
-        this.renderer = new THREE.WebGLRenderer();
-        this.renderer.setSize( width, width );
-        this.$refs.stage.appendChild( this.renderer.domElement );
-
-        // const geometry = new THREE.BoxGeometry();
-        // const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-        // const cube = new THREE.Mesh( geometry, material );
-        // this.scene.add( cube );
-
-        this.camera.position.z = 4;
-
-        const loader = new GLTFLoader();
-
-        loader.load( glbFile, ( gltf ) => {
-            console.log(gltf.scene.children);
-            const item   = gltf.scene;
-            this.scene.add( item );
-            let rot = 1;
-            setInterval(() => {
-                // rot += .1;
-                item.rotateY( rot * (Math.PI/180) );
-                this.renderer.render(this.scene, this.camera);
-            });
-            item.rotateY( 1.2 );
-            console.log(this.scene);
-            
-            // this.styleMeshes(this.scene);
-            this.renderer.render(this.scene, this.camera);
-
-        }, undefined, ( error ) => {
-
-            console.error( error );
-
-        } );
-
-        console.log(this.renderer);
-
-        this.renderer.render(this.scene, this.camera);
+        const model = await new ModelLoader(glbFile).load();
+        this.env.scene.add( model );
+        this.env.render();
     }
 }
 </script>
