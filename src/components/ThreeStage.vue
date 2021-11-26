@@ -10,7 +10,7 @@ import * as THREE from 'three';
 import Environment3d from '../classes/Environment3d.js';
 import ModelLoader from '../classes/ModelLoader.js';
 // const glbFile = 'https://danielpatrickkoenig.github.io/three-game-exparament/public/Xbot.glb';
-const glbFile = 'https://danielpatrickkoenig.github.io/three-game-exparament/public/testThing.glb';
+const glbFile = 'https://danielpatrickkoenig.github.io/three-game-exparament/public/remeshed.glb';
 // const glbFile = '../assets/testThing.txt';
 
 // const glbFile = 'https://danielpatrickkoenig.github.io/three-game-exparament/public/pencil/source/pencil.glb';
@@ -45,6 +45,10 @@ export default {
 
         const model = await new ModelLoader(glbFile).load();
         this.env.scene.add( model );
+        console.log(model);
+        const txtr = new THREE.TextureLoader().load( 'https://danielpatrickkoenig.github.io/three-game-exparament/public/FishTex.png' );
+        const modelMat = new THREE.MeshBasicMaterial( { map: txtr } );
+        model.children[2].material = modelMat;
 
         const pg = new THREE.PlaneGeometry( 5, 5 );
         const pm = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
@@ -63,17 +67,19 @@ export default {
 
 
         this.$refs.stage.addEventListener('mousemove', (e) => {
-            const elementX = e.clientX - e.currentTarget.getBoundingClientRect().left;
-            const elementY = e.clientY - e.currentTarget.getBoundingClientRect().top;
-            const mousePos = new THREE.Vector2(
-                ( elementX / window.innerWidth ) * 2 - 1,
-                - ( elementY / window.innerHeight ) * 2 + 1); 
-            // console.log(mousePos);
-            // console.log(this.env.scene.children);
-            const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(mousePos, this.env.camera);
-            const intersects = raycaster.intersectObjects(this.env.scene.children);
+            // const elementX = e.clientX - e.currentTarget.getBoundingClientRect().left;
+            // const elementY = e.clientY - e.currentTarget.getBoundingClientRect().top;
+            // const mousePos = new THREE.Vector2(
+            //     ( elementX / e.currentTarget.getBoundingClientRect().width ) * 2 - 1,
+            //     - ( elementY / e.currentTarget.getBoundingClientRect().height ) * 2 + 1); 
+            // // console.log(mousePos);
+            // // console.log(this.env.scene.children);
+            // const raycaster = new THREE.Raycaster();
+            // raycaster.setFromCamera(mousePos, this.env.camera);
+            // const intersects = raycaster.intersectObjects(this.env.scene.children);
+            const intersects = this.env.rayCastHits({x: e.clientX, y: e.clientY}, this.env.scene.children);
             const tappers = intersects.filter(item => item.object.name === 'tapper');
+            
             console.log(tappers);
             if(tappers.length){
                 console.log('move')
@@ -83,6 +89,7 @@ export default {
                 // cube.z = tappers[0].point.z;
                 this.env.render();
             }
+            model.rotateY(.01);
             // console.log(intersects);
             // let intersects = raycaster.intersectObjects(this.buttons );
         });
