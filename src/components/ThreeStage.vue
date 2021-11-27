@@ -10,7 +10,7 @@ import * as THREE from 'three';
 import Environment3d from '../classes/Environment3d.js';
 import ModelLoader from '../classes/ModelLoader.js';
 // const glbFile = 'https://danielpatrickkoenig.github.io/three-game-exparament/public/Xbot.glb';
-const glbFile = 'https://danielpatrickkoenig.github.io/three-game-exparament/public/remeshed.glb';
+const glbFile = 'https://danielpatrickkoenig.github.io/three-game-exparament/public/remeshed2.glb';
 // const glbFile = '../assets/testThing.txt';
 
 // const glbFile = 'https://danielpatrickkoenig.github.io/three-game-exparament/public/pencil/source/pencil.glb';
@@ -46,9 +46,9 @@ export default {
         const model = await new ModelLoader(glbFile).load();
         this.env.scene.add( model );
         console.log(model);
-        const txtr = new THREE.TextureLoader().load( 'https://danielpatrickkoenig.github.io/three-game-exparament/public/FishTex.png' );
-        const modelMat = new THREE.MeshBasicMaterial( { map: txtr } );
-        model.children[2].material = modelMat;
+        // const txtr = new THREE.TextureLoader().load( 'https://danielpatrickkoenig.github.io/three-game-exparament/public/FishTex.png' );
+        // const modelMat = new THREE.MeshBasicMaterial( { map: txtr } );
+        // model.children[2].material = modelMat;
 
         const pg = new THREE.PlaneGeometry( 5, 5 );
         const pm = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
